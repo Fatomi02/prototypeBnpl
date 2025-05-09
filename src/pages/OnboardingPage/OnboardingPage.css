@@ -1,0 +1,211 @@
+.onboarding-page {
+  display: flex;
+  min-height: 100vh;
+}
+
+.onboarding-page__sidebar {
+  width: 320px;
+  background-color: white;
+  border-right: 1px solid var(--color-neutral-200);
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+}
+
+.onboarding-page__logo {
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--color-primary-500);
+  margin-bottom: var(--space-10);
+  cursor: pointer;
+}
+
+.onboarding-page__steps {
+  margin-bottom: var(--space-8);
+}
+
+.onboarding-page__step {
+  display: flex;
+  margin-bottom: var(--space-6);
+}
+
+.onboarding-page__step-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: var(--space-4);
+}
+
+.onboarding-page__step-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--color-neutral-200);
+  color: var(--color-neutral-500);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  position: relative;
+  z-index: 1;
+  transition: var(--transition-base);
+}
+
+.onboarding-page__step--active .onboarding-page__step-icon {
+  background-color: var(--color-primary-500);
+  color: white;
+  box-shadow: 0 0 0 4px var(--color-primary-100);
+}
+
+.onboarding-page__step-connector {
+  width: 2px;
+  flex-grow: 1;
+  background-color: var(--color-neutral-200);
+  margin-top: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.onboarding-page__step:last-child .onboarding-page__step-connector {
+  display: none;
+}
+
+.onboarding-page__step--active .onboarding-page__step-connector {
+  background-color: var(--color-primary-500);
+}
+
+.onboarding-page__step-content {
+  padding-top: var(--space-2);
+}
+
+.onboarding-page__step-name {
+  font-weight: 500;
+  color: var(--color-neutral-100);
+  transition: var(--transition-base);
+}
+
+.onboarding-page__step--active .onboarding-page__step-name {
+  color: var(--color-primary-600);
+  font-weight: 600;
+}
+
+.onboarding-page__help {
+  margin-top: auto;
+  padding: var(--space-4);
+  background-color: var(--color-neutral-100);
+  border-radius: var(--border-radius-md);
+}
+
+.onboarding-page__help h3 {
+  font-size: 0.9rem;
+  color: var(--color-neutral-700);
+  margin-bottom: var(--space-2);
+}
+
+.onboarding-page__help p {
+  font-size: 0.8rem;
+  color: var(--color-neutral-700);
+  margin-bottom: 0;
+}
+
+.onboarding-page__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.onboarding-page__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-4) var(--space-6);
+  border-bottom: 1px solid var(--color-neutral-200);
+}
+
+.onboarding-page__progress {
+  font-size: 0.875rem;
+  color: var(--color-neutral-600);
+  font-weight: 500;
+}
+
+.onboarding-page__main {
+  flex: 1;
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.onboarding-page__footer {
+  padding: var(--space-4) var(--space-6);
+  border-top: 1px solid var(--color-neutral-200);
+  text-align: center;
+}
+
+.onboarding-page__footer p {
+  font-size: 0.75rem;
+  color: var(--color-neutral-500);
+  margin: 0;
+}
+
+.onboarding-page__footer a {
+  color: var(--color-primary-500);
+}
+
+/* Responsive styles */
+@media (max-width: 900px) {
+  .onboarding-page {
+    flex-direction: column;
+  }
+  
+  .onboarding-page__sidebar {
+    width: 100%;
+    padding: var(--space-4);
+  }
+  
+  .onboarding-page__steps {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--space-4);
+  }
+  
+  .onboarding-page__step {
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 0;
+    flex: 1;
+  }
+  
+  .onboarding-page__step-indicator {
+    margin-right: 0;
+    margin-bottom: var(--space-2);
+  }
+  
+  .onboarding-page__step-connector {
+    display: none;
+  }
+  
+  .onboarding-page__help {
+    display: none;
+  }
+  
+  .onboarding-page__main {
+    padding: var(--space-4);
+  }
+}
+
+@media (max-width: 600px) {
+  .onboarding-page__step-name {
+    font-size: 0.75rem;
+  }
+  
+  .onboarding-page__step-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 0.875rem;
+  }
+}

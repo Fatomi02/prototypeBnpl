@@ -1,0 +1,225 @@
+.welcome-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-neutral-50);
+}
+
+.welcome-page__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-4) var(--space-6);
+  border-bottom: 1px solid var(--color-neutral-200);
+  background-color: white;
+}
+
+.welcome-page__logo {
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--color-primary-500);
+}
+
+.welcome-page__main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-10) var(--space-6);
+  text-align: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.welcome-page__hero {
+  max-width: 700px;
+  margin-bottom: var(--space-10);
+}
+
+.welcome-page__title {
+  font-size: 3rem;
+  margin-bottom: var(--space-6);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--color-neutral-900);
+}
+
+.welcome-page__title-highlight {
+  color: var(--color-primary-500);
+  position: relative;
+  display: inline-block;
+}
+
+.welcome-page__title-highlight::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background-color: var(--color-primary-200);
+  border-radius: 2px;
+}
+
+.welcome-page__subtitle {
+  font-size: 1.25rem;
+  color: var(--color-neutral-300);
+  margin-bottom: var(--space-8);
+  line-height: 1.5;
+}
+
+.welcome-page__note {
+  margin-top: var(--space-4);
+  font-size: 0.875rem;
+  color: var(--color-neutral-500);
+}
+
+.welcome-page__image-container {
+  width: 100%;
+  max-width: 800px;
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-xl);
+  margin: 0 auto var(--space-16);
+}
+
+.welcome-page__image {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+.welcome-page__features {
+  padding: var(--space-16) var(--space-6);
+  background-color: white;
+  width: 100%;
+}
+
+.welcome-page__features-title {
+  text-align: center;
+  margin-bottom: var(--space-10);
+  font-size: 2rem;
+}
+
+.welcome-page__features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-6);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.welcome-page__feature-card {
+  padding: var(--space-6);
+  background-color: var(--color-neutral-50);
+  border-radius: var(--border-radius-lg);
+  text-align: center;
+  transition: var(--transition-base);
+}
+
+.welcome-page__feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+}
+
+.welcome-page__feature-icon {
+  font-size: 2rem;
+  color: var(--color-primary-500);
+  margin-bottom: var(--space-4);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  background-color: var(--color-primary-50);
+  border-radius: 50%;
+}
+
+.welcome-page__feature-title {
+  margin-bottom: var(--space-3);
+  font-size: 1.25rem;
+  color: var(--color-neutral-800);
+}
+
+.welcome-page__feature-description {
+  color: var(--color-neutral-600);
+  line-height: 1.6;
+}
+
+.welcome-page__footer {
+  padding: var(--space-8) var(--space-6);
+  background-color: var(--color-neutral-100);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-4);
+  margin-top: auto;
+}
+
+.welcome-page__footer p {
+  color: var(--color-neutral-600);
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.welcome-page__footer-links {
+  display: flex;
+  gap: var(--space-4);
+}
+
+.welcome-page__footer-links a {
+  font-size: 0.875rem;
+  color: var(--color-neutral-500);
+}
+
+.welcome-page__footer-links a:hover {
+  color: var(--color-primary-500);
+}
+
+/* Responsive styles */
+@media (min-width: 768px) {
+  .welcome-page__main {
+    flex-direction: row;
+    text-align: left;
+    gap: var(--space-10);
+    padding-top: var(--space-16);
+    padding-bottom: var(--space-16);
+  }
+  
+  .welcome-page__hero {
+    flex: 1;
+    margin-bottom: 0;
+  }
+  
+  .welcome-page__image-container {
+    flex: 1;
+    margin: 0;
+  }
+  
+  .welcome-page__footer {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 767px) {
+  .welcome-page__title {
+    font-size: 2.25rem;
+  }
+  
+  .welcome-page__subtitle {
+    font-size: 1rem;
+  }
+  
+  .welcome-page__features {
+    padding: var(--space-8) var(--space-4);
+  }
+  
+  .welcome-page__features-title {
+    font-size: 1.5rem;
+    margin-bottom: var(--space-6);
+  }
+}

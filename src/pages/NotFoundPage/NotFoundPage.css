@@ -1,0 +1,32 @@
+.not-found-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6);
+  text-align: center;
+}
+
+.not-found-page__content {
+  max-width: 500px;
+}
+
+.not-found-page__title {
+  font-size: 6rem;
+  font-weight: 800;
+  color: var(--color-primary-500);
+  line-height: 1;
+  margin-bottom: var(--space-4);
+}
+
+.not-found-page__subtitle {
+  font-size: 2rem;
+  margin-bottom: var(--space-6);
+  color: var(--color-neutral-200);
+}
+
+.not-found-page__description {
+  font-size: 1.1rem;
+  color: var(--color-neutral-300);
+  margin-bottom: var(--space-8);
+}

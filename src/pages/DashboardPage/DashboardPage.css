@@ -1,0 +1,36 @@
+.dashboard-page {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--color-neutral-100);
+}
+
+.dashboard-page__content {
+  flex: 1;
+  margin-left: 240px;
+  transition: margin 0.3s ease;
+}
+
+.dashboard-page__container {
+  padding: var(--space-6);
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Responsive styles */
+@media (max-width: 1024px) {
+  .dashboard-page__content {
+    margin-left: 72px;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-page__content {
+    margin-left: 0;
+    padding-top: 60px; /* Height of the mobile menu button + some spacing */
+  }
+  
+  .dashboard-page__container {
+    padding: var(--space-4);
+  }
+}
