@@ -1,50 +1,26 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { FaSearch, FaFilter, FaFileAlt } from 'react-icons/fa'
 import './DashboardSections.css'
+import { useHistoryStore } from '../../../store/history'
 
 const DashboardHistory = () => {
   const [filter, setFilter] = useState('all')
-  const [searchTerm, setSearchTerm] = useState('')
-  
-  // Sample application history data (would come from an API in a real app)
-  const applications = [
-    {
-      id: 1,
-      date: '2025-03-15',
-      amount: 15000,
-      vendor: 'Electronics Store',
-      category: 'Electronics',
-      description: 'Smartphone purchase',
-      status: 'approved'
-    },
-    {
-      id: 2,
-      date: '2025-02-28',
-      amount: 8000,
-      vendor: 'Fashion Outlet',
-      category: 'Fashion',
-      description: 'Winter clothing',
-      status: 'approved'
-    },
-    {
-      id: 3,
-      date: '2025-02-10',
-      amount: 25000,
-      vendor: 'Home Goods',
-      category: 'Household Items',
-      description: 'Kitchen appliances',
-      status: 'rejected'
-    }
-  ]
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const {fetchHistory, history} = useHistoryStore()
+
+  useEffect(() => {
+    fetchHistory();
+  }, [fetchHistory])
   
   // Filter applications based on status and search term
-  const filteredApplications = applications.filter(app => {
+  const filteredHistory = history.filter(app => {
     const matchesFilter = filter === 'all' || app.status === filter
     const matchesSearch = searchTerm === '' || 
-      app.vendor.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      app.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      app.category.toLowerCase().includes(searchTerm.toLowerCase())
+      app?.vendor.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      app?.purpose.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      app?.category.toLowerCase().includes(searchTerm.toLowerCase())
     
     return matchesFilter && matchesSearch
   })
@@ -118,30 +94,30 @@ const DashboardHistory = () => {
           
           <div className="dashboard-card__body">
             <div className="applications">
-              {filteredApplications.length > 0 ? (
+              {filteredHistory.length > 0 ? (
                 <div className="applications__list">
-                  {filteredApplications.map((application) => (
+                  {filteredHistory.map((application, index) => (
                     <div 
-                      key={application.id} 
+                      key={index} 
                       className={`application-item application-item--${application.status}`}
                     >
                       <div className="application-item__header">
                         <div className="application-item__vendor">{application.vendor}</div>
                         <div className="application-item__date">
-                          {new Date(application.date).toLocaleDateString()}
+                          {new Date(application.createdAt).toLocaleDateString()}
                         </div>
                       </div>
                       
                       <div className="application-item__body">
                         <div className="application-item__details">
                           <div className="application-item__amount">
-                            ₦{application.amount.toLocaleString()}
+                            ₦{application?.amountApproved.toLocaleString()}
                           </div>
                           <div className="application-item__category">
                             {application.category}
                           </div>
                           <div className="application-item__description">
-                            {application.description}
+                            {application.purpose}
                           </div>
                         </div>
                         

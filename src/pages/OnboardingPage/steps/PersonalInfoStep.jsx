@@ -7,7 +7,7 @@ import './Steps.css'
 import PropTypes from 'prop-types'
 
 const PersonalInfoStep = ({ onNext }) => {
-  const { user, setUser } = useUserStore()
+  const { user } = useUserStore()
   
   const { 
     register, 
@@ -17,14 +17,14 @@ const PersonalInfoStep = ({ onNext }) => {
     defaultValues: {
       fullName: user.fullName || '',
       phoneNumber: user.phoneNumber || '',
-      email: user.email || ''
+      email: user.email || '',
+      password: user.password || ''
     },
     mode: 'onChange'
   })
   
   const onSubmit = (data) => {
-    setUser(data)
-    onNext()
+    onNext(data)
   }
   
   return (
@@ -79,6 +79,22 @@ const PersonalInfoStep = ({ onNext }) => {
             pattern: {
               value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
               message: 'Please enter a valid email address'
+            }
+          })}
+        />
+        
+        <FormInput
+          id="password"
+          type="password"
+          label="Password"
+          placeholder="Enter your password"
+          required
+          error={errors.password?.message}
+          {...register('password', { 
+            required: 'Password is required',
+            minLength: {
+              value: 8,
+              message: 'Password must be at least 8 characters'
             }
           })}
         />

@@ -1,21 +1,32 @@
-import { useState } from 'react'
+/* eslint-disable react/no-unescaped-entities */
+import { useEffect, useState } from 'react'
 import { FaArrowRight, FaMoneyBillWave, FaStore, FaShoppingBag, FaFileAlt } from 'react-icons/fa'
 import { motion } from 'framer-motion'
 import { useUserStore } from '../../../store/userStore'
 import { useBnplStore } from '../../../store/bnplStore'
 import Button from '../../../components/Button/Button'
-import FormInput from '../../../components/FormInput/FormInput'
+// import FormInput from '../../../components/FormInput/FormInput'
 import './DashboardSections.css'
+import { toast } from 'react-toastify'
+import { useTransactionStore } from '../../../store/transaction'
 
 const DashboardHome = () => {
-  const { user } = useUserStore()
+  const { user } = useUserStore();
+    const {fetchTransactions, transactions} = useTransactionStore();
+
+  useEffect(() => {
+    fetchTransactions();
+  }, [fetchTransactions])
+
   const { 
+    applicationStatus,
     application, 
     vendors, 
     productCategories, 
     updateApplication, 
-    submitApplication, 
-    processApplication 
+    submitApplication,
+    resetApplication,
+    setApplicationStatus
   } = useBnplStore()
   
   const [step, setStep] = useState(1)
@@ -28,19 +39,26 @@ const DashboardHome = () => {
   
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setIsSubmitting(true)
-    
-    // Submit application
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    submitApplication()
-    setIsSubmitting(false)
-    setStep(3)
+    setIsSubmitting(true);
+
+    try {
+     const result = await submitApplication(application)
+     console.log(result, 'ol')
+     if(result.status === 201) {
+      setIsSubmitting(false)
+      toast.success(result?.data?.message);
+      setApplicationStatus(result?.data?.data?.status)
+      setStep(3)
+     }
+    } catch (error) {
+      console.log(error, 'ol');
+      toast.error(error.response?.data?.message);
+      setIsSubmitting(false)
+    }
   }
   
   const handleProcess = async () => {
     setIsProcessing(true)
-    const result = await processApplication()
-    setIsProcessing(false)
     setStep(4)
   }
   
@@ -87,7 +105,7 @@ const DashboardHome = () => {
           <div className="dashboard-card__body">
             <div className="dashboard-credit">
               <div className="dashboard-credit__amount">
-                ₦{(user.approvedCredit || 50000).toLocaleString()}
+                ₦{(transactions?.availableCredit || '50,000').toLocaleString()}
               </div>
               <div className="dashboard-credit__label">
                 Available Credit
@@ -113,16 +131,16 @@ const DashboardHome = () => {
                 
                 <form className="bnpl-form__container">
                   <div className="bnpl-form__field">
-                    <label htmlFor="loanAmount" className="bnpl-form__label">
+                    <label htmlFor="amount" className="bnpl-form__label">
                       Loan Amount (₦)
                     </label>
                     <input
                       type="number"
-                      id="loanAmount"
+                      id="amount"
                       className="bnpl-form__input"
                       placeholder="Enter amount"
-                      value={application.loanAmount || ''}
-                      onChange={(e) => updateApplication({ loanAmount: Number(e.target.value) })}
+                      value={application.amount || ''}
+                      onChange={(e) => updateApplication({ amount: Number(e.target.value) })}
                       min="1000"
                       max={user.approvedCredit || 50000}
                     />
@@ -148,14 +166,14 @@ const DashboardHome = () => {
                   </div>
                   
                   <div className="bnpl-form__field">
-                    <label htmlFor="productCategory" className="bnpl-form__label">
+                    <label htmlFor="category" className="bnpl-form__label">
                       Product Category
                     </label>
                     <select
-                      id="productCategory"
+                      id="category"
                       className="bnpl-form__select"
-                      value={application.productCategory || ''}
-                      onChange={(e) => updateApplication({ productCategory: e.target.value })}
+                      value={application.category || ''}
+                      onChange={(e) => updateApplication({ category: e.target.value })}
                     >
                       <option value="">Select a category</option>
                       {productCategories.map((category) => (
@@ -169,7 +187,7 @@ const DashboardHome = () => {
                   <div className="bnpl-form__actions">
                     <Button
                       onClick={handleContinue}
-                      disabled={!application.loanAmount || !application.vendor || !application.productCategory}
+                      disabled={!application.amount || !application.vendor || !application.category}
                       icon={<FaArrowRight />}
                       iconPosition="right"
                     >
@@ -186,15 +204,15 @@ const DashboardHome = () => {
                 
                 <form className="bnpl-form__container" onSubmit={handleSubmit}>
                   <div className="bnpl-form__field">
-                    <label htmlFor="productDescription" className="bnpl-form__label">
+                    <label htmlFor="purpose" className="bnpl-form__label">
                       Product Description
                     </label>
                     <textarea
-                      id="productDescription"
+                      id="purpose"
                       className="bnpl-form__textarea"
                       placeholder="Briefly describe what you are purchasing"
-                      value={application.productDescription || ''}
-                      onChange={(e) => updateApplication({ productDescription: e.target.value })}
+                      value={application.purpose || ''}
+                      onChange={(e) => updateApplication({ purpose: e.target.value })}
                       rows={4}
                       required
                     />
@@ -231,7 +249,7 @@ const DashboardHome = () => {
                     <div className="bnpl-form__summary-item">
                       <FaMoneyBillWave />
                       <span className="bnpl-form__summary-label">Amount:</span>
-                      <span className="bnpl-form__summary-value">₦{application.loanAmount?.toLocaleString() || 0}</span>
+                      <span className="bnpl-form__summary-value">₦{application.amount?.toLocaleString() || 0}</span>
                     </div>
                     <div className="bnpl-form__summary-item">
                       <FaStore />
@@ -241,13 +259,13 @@ const DashboardHome = () => {
                     <div className="bnpl-form__summary-item">
                       <FaShoppingBag />
                       <span className="bnpl-form__summary-label">Category:</span>
-                      <span className="bnpl-form__summary-value">{application.productCategory || 'Not selected'}</span>
+                      <span className="bnpl-form__summary-value">{application.category || 'Not selected'}</span>
                     </div>
                   </div>
                   
                   <div className="bnpl-form__actions">
                     <Button
-                      variant="secondary"
+                      variant="tertiary"
                       onClick={() => setStep(1)}
                     >
                       Back
@@ -255,7 +273,7 @@ const DashboardHome = () => {
                     <Button
                       type="submit"
                       isLoading={isSubmitting}
-                      disabled={!application.productDescription}
+                      disabled={!application.purpose}
                     >
                       Apply for BNPL
                     </Button>
@@ -289,7 +307,7 @@ const DashboardHome = () => {
               </div>
             )}
             
-            {step === 4 && application.applicationStatus === 'approved' && (
+            {step === 4 && applicationStatus === 'approved' && (
               <div className="bnpl-form">
                 <h3 className="bnpl-form__title">Application Approved!</h3>
                 
@@ -306,7 +324,7 @@ const DashboardHome = () => {
                     <h4>Purchase Details</h4>
                     <div className="bnpl-form__approved-item">
                       <span className="bnpl-form__approved-label">Amount:</span>
-                      <span className="bnpl-form__approved-value">₦{application.loanAmount?.toLocaleString() || 0}</span>
+                      <span className="bnpl-form__approved-value">₦{application.amount?.toLocaleString() || 0}</span>
                     </div>
                     <div className="bnpl-form__approved-item">
                       <span className="bnpl-form__approved-label">Vendor:</span>
@@ -314,7 +332,7 @@ const DashboardHome = () => {
                     </div>
                     <div className="bnpl-form__approved-item">
                       <span className="bnpl-form__approved-label">Category:</span>
-                      <span className="bnpl-form__approved-value">{application.productCategory}</span>
+                      <span className="bnpl-form__approved-value">{application.category}</span>
                     </div>
                     <div className="bnpl-form__approved-item">
                       <span className="bnpl-form__approved-label">Approval Date:</span>
@@ -328,15 +346,55 @@ const DashboardHome = () => {
                     <Button
                       onClick={() => {
                         // Reset the application and start over
-                        updateApplication({
-                          loanAmount: 0,
-                          vendor: '',
-                          productCategory: '',
-                          productDescription: '',
-                          productImageUrl: '',
-                          applicationStatus: 'pending',
-                          applicationDate: null,
-                        })
+                        resetApplication()
+                        setStep(1)
+                      }}
+                    >
+                      Start New Application
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {step === 4 && applicationStatus === 'pending' && (
+              <div className="bnpl-form">
+                <h3 className="bnpl-form__title">Application Is Pending!</h3>
+                
+                <div className="bnpl-form__success bnpl-form__success--approved">
+                  <div className="bnpl-form__success-icon bnpl-form__success-icon--approved">
+                    <FaMoneyBillWave />
+                  </div>
+                  <p className="bnpl-form__success-message">
+                    Your BNPL application is under review. 
+                    An update will be sent to your email.
+                  </p>
+                  
+                  <div className="bnpl-form__approved-details">
+                    <h4>Purchase Details</h4>
+                    <div className="bnpl-form__approved-item">
+                      <span className="bnpl-form__approved-label">Amount:</span>
+                      <span className="bnpl-form__approved-value">₦{application.amount?.toLocaleString() || 0}</span>
+                    </div>
+                    <div className="bnpl-form__approved-item">
+                      <span className="bnpl-form__approved-label">Vendor:</span>
+                      <span className="bnpl-form__approved-value">{application.vendor}</span>
+                    </div>
+                    <div className="bnpl-form__approved-item">
+                      <span className="bnpl-form__approved-label">Category:</span>
+                      <span className="bnpl-form__approved-value">{application.category}</span>
+                    </div>
+                    <div className="bnpl-form__approved-item">
+                      <span className="bnpl-form__approved-label">Product Description:</span>
+                      <span className="bnpl-form__approved-value">{application.purpose}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="bnpl-form__actions">
+                    <Button
+                      onClick={() => {
+                        // Reset the application and start over
+                        resetApplication()
                         setStep(1)
                       }}
                     >
@@ -347,7 +405,7 @@ const DashboardHome = () => {
               </div>
             )}
             
-            {step === 4 && application.applicationStatus === 'rejected' && (
+            {step === 4 && applicationStatus === 'rejected' && (
               <div className="bnpl-form">
                 <h3 className="bnpl-form__title">Application Not Approved</h3>
                 
@@ -364,15 +422,7 @@ const DashboardHome = () => {
                     <Button
                       onClick={() => {
                         // Reset the application and start over
-                        updateApplication({
-                          loanAmount: 0,
-                          vendor: '',
-                          productCategory: '',
-                          productDescription: '',
-                          productImageUrl: '',
-                          applicationStatus: 'pending',
-                          applicationDate: null,
-                        })
+                        resetApplication()
                         setStep(1)
                       }}
                     >

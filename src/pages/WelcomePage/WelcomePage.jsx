@@ -57,7 +57,7 @@ const WelcomePage = () => {
         <Button 
           variant="ghost" 
           size="small"
-          onClick={() => navigate('/onboarding')}
+          onClick={() => navigate('/login')}
         >
           Log in
         </Button>

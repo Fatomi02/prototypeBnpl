@@ -1,17 +1,20 @@
 import { create } from 'zustand'
+import api from '../api/api';
+import { toast } from 'react-toastify';
 
 // Store for BNPL application-specific data
 export const useBnplStore = create((set) => ({
   // BNPL application data
   application: {
-    loanAmount: 0,
+    userId: localStorage.getItem('userId') || '',
+    amount: 0,
     vendor: '',
-    productCategory: '',
-    productDescription: '',
-    productImageUrl: '',
-    applicationStatus: 'pending', // pending, approved, rejected
-    applicationDate: null,
+    category: '',
+    purpose: '',
+    durationInMonths: 6,
   },
+  loading: false,
+  applicationStatus: '',
   
   // Available vendors and product categories (normally these would come from an API)
   vendors: [
@@ -33,44 +36,45 @@ export const useBnplStore = create((set) => ({
     application: { ...state.application, ...data }
   })),
   
-  submitApplication: () => set((state) => ({
+submitApplication: (payload) => {
+  set({loading: true})
+  set((state) => ({
     application: { 
       ...state.application, 
-      applicationStatus: 'pending',
-      applicationDate: new Date().toISOString()
     }
-  })),
+  }));
+  try {
+    const res = api.post('loans/apply', payload);
+    set({loading: false})
+    return res;
+  }
+  catch (error) {
+    console.log(error, 'ol');
+    set({loading: false})
+    toast.error(
+      error?.response?.data?.message || 'Application submission failed. Please try again.'
+    );
+  }
+},
   
   // Simulate BNPL decision (in a real app, this would be an API call)
-  processApplication: () => {
-    return new Promise((resolve) => {
-      // Simulate API delay
-      setTimeout(() => {
-        // Random approval (70% chance of approval for demo purposes)
-        const isApproved = Math.random() > 0.3
-        
-        set((state) => ({
-          application: {
-            ...state.application,
-            applicationStatus: isApproved ? 'approved' : 'rejected'
-          }
-        }))
-        
-        resolve(isApproved)
-      }, 2000)
-    })
+  processApplication: (data) => {
+    console.log(data)
   },
+
+  setApplicationStatus: (status) => set({
+    applicationStatus: status
+  }),
   
   // Reset application
   resetApplication: () => set({
     application: {
-      loanAmount: 0,
+      amount: 0,
       vendor: '',
-      productCategory: '',
-      productDescription: '',
+      category: '',
+      purpose: '',
       productImageUrl: '',
-      applicationStatus: 'pending',
-      applicationDate: null,
+      durationInMonths: 6,
     }
   })
 }))

@@ -1,37 +1,22 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { FaCreditCard, FaCalendarAlt, FaClock, FaCheckCircle, FaBell } from 'react-icons/fa'
 import Button from '../../../components/Button/Button'
 import './DashboardSections.css'
+import { useHistoryStore } from '../../../store/history'
+import { useTransactionStore } from '../../../store/transaction'
 
 const DashboardRepayments = () => {
   const [isSettingUpAutoPay, setIsSettingUpAutoPay] = useState(false)
   const [autoPayEnabled, setAutoPayEnabled] = useState(false)
+
+  const {fetchRepaymentHistory, repaymentHistory} = useHistoryStore();
+  const {makePayment} = useTransactionStore();
+
+  useEffect(() => {
+    fetchRepaymentHistory();
+  }, [fetchRepaymentHistory])
   
-  // Sample repayment data (would come from an API in a real app)
-  const repayments = [
-    {
-      id: 1,
-      amount: 5000,
-      dueDate: '2025-04-15',
-      status: 'upcoming',
-      purchase: 'Electronics Store - Smartphone'
-    },
-    {
-      id: 2,
-      amount: 3000,
-      dueDate: '2025-04-01',
-      status: 'paid',
-      purchase: 'Fashion Outlet - Winter Clothing'
-    },
-    {
-      id: 3,
-      amount: 2000,
-      dueDate: '2025-03-15',
-      status: 'overdue',
-      purchase: 'Home Goods - Kitchen Appliances'
-    }
-  ]
   
   const handleSetupAutoPay = () => {
     setIsSettingUpAutoPay(true)
@@ -135,17 +120,17 @@ const DashboardRepayments = () => {
           </div>
           <div className="dashboard-card__body">
             <div className="repayments">
-              {repayments.length > 0 ? (
+              {repaymentHistory.length > 0 ? (
                 <div className="repayments__list">
-                  {repayments.map((repayment) => (
+                  {repaymentHistory.map((repayment, index) => (
                     <div 
-                      key={repayment.id} 
+                      key={index} 
                       className={`repayment-item repayment-item--${repayment.status}`}
                     >
                       <div className="repayment-item__icon">
-                        {repayment.status === 'paid' ? (
+                        {repayment.status === 'paid off' ? (
                           <FaCheckCircle />
-                        ) : repayment.status === 'upcoming' ? (
+                        ) : repayment.status == 'pending' ? (
                           <FaCalendarAlt />
                         ) : (
                           <FaClock />
@@ -154,15 +139,15 @@ const DashboardRepayments = () => {
                       
                       <div className="repayment-item__details">
                         <div className="repayment-item__purchase">
-                          {repayment.purchase}
+                          {repayment.category}
                         </div>
                         <div className="repayment-item__date">
-                          Due: {new Date(repayment.dueDate).toLocaleDateString()}
+                          Due: {new Date(repayment.createdAt).toLocaleDateString()}
                         </div>
                       </div>
                       
                       <div className="repayment-item__amount">
-                        ₦{repayment.amount.toLocaleString()}
+                        ₦{repayment.amountApproved.toLocaleString()}
                       </div>
                       
                       <div className="repayment-item__status">
@@ -171,9 +156,9 @@ const DashboardRepayments = () => {
                         </span>
                       </div>
                       
-                      {repayment.status !== 'paid' && (
+                      {(repayment.status !== 'paid off' && repayment.status !== 'pending') && (
                         <div className="repayment-item__action">
-                          <Button size="small">
+                          <Button onClick={() => makePayment(repayment.remainingBalance, repayment.loanId)} size="small">
                             Pay Now
                           </Button>
                         </div>

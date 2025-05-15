@@ -7,7 +7,7 @@ import './Steps.css'
 import PropTypes from 'prop-types'
 
 const BankDetailsStep = ({ onNext }) => {
-  const { user, setUser } = useUserStore()
+  const { user } = useUserStore()
   
   const { 
     register, 
@@ -16,18 +16,14 @@ const BankDetailsStep = ({ onNext }) => {
   } = useForm({
     defaultValues: {
       bvn: user.bvn || '',
-      bankAccountNumber: user.bankAccountNumber || '',
-      bankStatementUploaded: user.bankStatementUploaded || false
+      bankAccountNumber: user.bankAccountNumber,
+      bankStatement: user.bankStatement
     },
     mode: 'onChange'
   })
   
   const onSubmit = (data) => {
-    setUser({
-      ...data,
-      bankStatementUploaded: true // Mark as uploaded for demo
-    })
-    onNext()
+    onNext(data)
   }
   
   return (

@@ -1,49 +1,26 @@
 import { motion } from 'framer-motion'
-import { FaCreditCard, FaHistory, FaChartLine } from 'react-icons/fa'
-import { useUserStore } from '../../../store/userStore'
+import { FaCreditCard, FaHistory } from 'react-icons/fa'
 import './DashboardSections.css'
+import { useEffect } from 'react'
+import { useTransactionStore } from '../../../store/transaction'
+import { useHistoryStore } from '../../../store/history'
 
 const DashboardWallet = () => {
-  const { user } = useUserStore()
+
+    const {fetchTransactions, transactions} = useTransactionStore();
+    const {fetchRepaymentHistory, repaymentHistory} = useHistoryStore();
+  
+    useEffect(() => {
+      fetchTransactions();
+      fetchRepaymentHistory();
+    }, [fetchTransactions, fetchRepaymentHistory])
+    
   
   // Sample transaction history data (would come from an API in a real app)
-  const transactions = [
-    {
-      id: 1,
-      type: 'Purchase',
-      amount: 15000,
-      vendor: 'Electronics Store',
-      date: '2025-03-15',
-      status: 'Completed'
-    },
-    {
-      id: 2,
-      type: 'Payment',
-      amount: 5000,
-      vendor: null,
-      date: '2025-03-10',
-      status: 'Completed'
-    },
-    {
-      id: 3,
-      type: 'Purchase',
-      amount: 8000,
-      vendor: 'Fashion Outlet',
-      date: '2025-02-28',
-      status: 'Completed'
-    }
-  ]
+  const paidCredit = repaymentHistory
+    .filter(t => t.status === 'paid off')
+    .reduce((total, t) => total + t.amountApproved, 0)
   
-  const creditLimit = user.approvedCredit || 50000
-  const usedCredit = transactions
-    .filter(t => t.type === 'Purchase' && t.status === 'Completed')
-    .reduce((total, t) => total + t.amount, 0)
-    
-  const paidCredit = transactions
-    .filter(t => t.type === 'Payment' && t.status === 'Completed')
-    .reduce((total, t) => total + t.amount, 0)
-    
-  const availableCredit = creditLimit - usedCredit + paidCredit
   
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -89,7 +66,7 @@ const DashboardWallet = () => {
               <div className="wallet-overview__card">
                 <FaCreditCard className="wallet-overview__icon" />
                 <div className="wallet-overview__details">
-                  <div className="wallet-overview__amount">₦{availableCredit.toLocaleString()}</div>
+                  <div className="wallet-overview__amount">₦{transactions?.availableCredit?.toLocaleString()}</div>
                   <div className="wallet-overview__label">Available Credit</div>
                 </div>
               </div>
@@ -97,29 +74,29 @@ const DashboardWallet = () => {
               <div className="wallet-stats">
                 <div className="wallet-stats__item">
                   <div className="wallet-stats__label">Total Credit Limit</div>
-                  <div className="wallet-stats__value">₦{creditLimit.toLocaleString()}</div>
+                  <div className="wallet-stats__value">₦{transactions?.totalCreditLimit?.toLocaleString()}</div>
                 </div>
                 
                 <div className="wallet-stats__item">
                   <div className="wallet-stats__label">Used Credit</div>
-                  <div className="wallet-stats__value">₦{usedCredit.toLocaleString()}</div>
+                  <div className="wallet-stats__value">₦{transactions?.usedCredit?.toLocaleString()}</div>
                 </div>
                 
                 <div className="wallet-stats__item">
                   <div className="wallet-stats__label">Payment Made</div>
-                  <div className="wallet-stats__value">₦{paidCredit.toLocaleString()}</div>
+                  <div className="wallet-stats__value">₦{paidCredit.toLocaleString() || '---'}</div>
                 </div>
               </div>
               
               <div className="wallet-progress">
                 <div className="wallet-progress__label">
                   <span>Credit Utilization</span>
-                  <span>{Math.round((usedCredit - paidCredit) / creditLimit * 100)}%</span>
+                  <span>{Math.round((transactions?.usedCredit - paidCredit) / transactions?.totalCreditLimit * 100)}%</span>
                 </div>
                 <div className="wallet-progress__bar">
                   <div 
                     className="wallet-progress__fill"
-                    style={{ width: `${Math.min(100, (usedCredit - paidCredit) / creditLimit * 100)}%` }}
+                    style={{ width: `${Math.min(100, (transactions?.usedCredit - paidCredit) / transactions?.totalCreditLimit * 100)}%` }}
                   ></div>
                 </div>
               </div>

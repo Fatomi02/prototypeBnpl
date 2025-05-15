@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { FaHeadset, FaQuestionCircle, FaPhone, FaEnvelope, FaComments, FaPaperPlane } from 'react-icons/fa'
+import { FaHeadset, FaQuestionCircle, FaPhone, FaEnvelope, FaPaperPlane } from 'react-icons/fa'
 import Button from '../../../components/Button/Button'
 import './DashboardSections.css'
 
@@ -110,7 +110,7 @@ const DashboardSupport = () => {
                   </div>
                 </div>
                 
-                <div className="support-contact__method">
+                {/* <div className="support-contact__method">
                   <div className="support-contact__icon">
                     <FaComments />
                   </div>
@@ -119,7 +119,7 @@ const DashboardSupport = () => {
                     <p>Chat with our support agents in real-time</p>
                     <Button size="small">Start Chat</Button>
                   </div>
-                </div>
+                </div> */}
               </div>
               
               <div className="support-message">

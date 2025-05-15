@@ -1078,6 +1078,11 @@
   color: white;
 }
 
+.repayment-item__status-badge--pending {
+  background-color: var(--color-warning-500);
+  color: white;
+}
+
 .repayment-item__status-badge--overdue {
   background-color: var(--color-error-500);
   color: white;

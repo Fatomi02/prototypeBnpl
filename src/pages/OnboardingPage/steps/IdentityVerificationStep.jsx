@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 /* eslint-disable react/no-unescaped-entities */
 import { useForm } from 'react-hook-form'
@@ -8,7 +9,7 @@ import FormInput from '../../../components/FormInput/FormInput'
 import './Steps.css'
 
 const IdentityVerificationStep = ({ onNext }) => {
-  const { user, setUser } = useUserStore()
+  const { user, isLoading } = useUserStore()
   
   const { 
     register, 
@@ -19,7 +20,7 @@ const IdentityVerificationStep = ({ onNext }) => {
     defaultValues: {
       idType: user.idType || '',
       idNumber: '',
-      idUploaded: user.idUploaded || false
+      idDocument: user.idDocument || ''
     },
     mode: 'onChange'
   })
@@ -27,11 +28,7 @@ const IdentityVerificationStep = ({ onNext }) => {
   const selectedIdType = watch('idType')
   
   const onSubmit = (data) => {
-    setUser({
-      ...data,
-      idUploaded: true // Mark as uploaded for demo
-    })
-    onNext()
+    onNext(data)
   }
   
   return (
@@ -77,10 +74,7 @@ const IdentityVerificationStep = ({ onNext }) => {
                     selectedIdType === 'drivers' ? 'Driver\'s License' : 
                     'Passport'} Number`}
             placeholder="Enter your ID number"
-            required
-            error={errors.idNumber?.message}
             {...register('idNumber', { 
-              required: 'ID number is required',
               minLength: {
                 value: 4,
                 message: 'ID number is too short'
@@ -130,7 +124,7 @@ const IdentityVerificationStep = ({ onNext }) => {
           <Button 
             type="submit"
             disabled={!isValid}
-            isLoading={isSubmitting}
+            isLoading={isLoading}
             icon={<FaArrowRight />}
             iconPosition="right"
           >
