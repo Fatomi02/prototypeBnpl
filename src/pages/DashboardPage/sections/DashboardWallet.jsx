@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { FaCreditCard, FaHistory } from 'react-icons/fa'
+import { FaCreditCard, FaHistory, FaShoppingBag } from 'react-icons/fa'
 import './DashboardSections.css'
 import { useEffect } from 'react'
 import { useTransactionStore } from '../../../store/transaction'
@@ -7,13 +7,14 @@ import { useHistoryStore } from '../../../store/history'
 
 const DashboardWallet = () => {
 
-    const {fetchTransactions, transactions} = useTransactionStore();
+    const {fetchWalletDashboard, walletDashboard, transactions, fetchTransactions} = useTransactionStore();
     const {fetchRepaymentHistory, repaymentHistory} = useHistoryStore();
   
     useEffect(() => {
-      fetchTransactions();
+      fetchWalletDashboard();
+      fetchTransactions()
       fetchRepaymentHistory();
-    }, [fetchTransactions, fetchRepaymentHistory])
+    }, [fetchWalletDashboard, fetchTransactions, fetchRepaymentHistory])
     
   
   // Sample transaction history data (would come from an API in a real app)
@@ -66,7 +67,7 @@ const DashboardWallet = () => {
               <div className="wallet-overview__card">
                 <FaCreditCard className="wallet-overview__icon" />
                 <div className="wallet-overview__details">
-                  <div className="wallet-overview__amount">₦{transactions?.availableCredit?.toLocaleString()}</div>
+                  <div className="wallet-overview__amount">₦{walletDashboard?.availableCredit?.toLocaleString()}</div>
                   <div className="wallet-overview__label">Available Credit</div>
                 </div>
               </div>
@@ -74,12 +75,12 @@ const DashboardWallet = () => {
               <div className="wallet-stats">
                 <div className="wallet-stats__item">
                   <div className="wallet-stats__label">Total Credit Limit</div>
-                  <div className="wallet-stats__value">₦{transactions?.totalCreditLimit?.toLocaleString()}</div>
+                  <div className="wallet-stats__value">₦{walletDashboard?.totalCreditLimit?.toLocaleString()}</div>
                 </div>
                 
                 <div className="wallet-stats__item">
                   <div className="wallet-stats__label">Used Credit</div>
-                  <div className="wallet-stats__value">₦{transactions?.usedCredit?.toLocaleString()}</div>
+                  <div className="wallet-stats__value">₦{walletDashboard?.usedCredit?.toLocaleString()}</div>
                 </div>
                 
                 <div className="wallet-stats__item">
@@ -91,12 +92,12 @@ const DashboardWallet = () => {
               <div className="wallet-progress">
                 <div className="wallet-progress__label">
                   <span>Credit Utilization</span>
-                  <span>{Math.round((transactions?.usedCredit - paidCredit) / transactions?.totalCreditLimit * 100)}%</span>
+                  <span>{Math.round((walletDashboard?.usedCredit - paidCredit) / walletDashboard?.totalCreditLimit * 100)}%</span>
                 </div>
                 <div className="wallet-progress__bar">
                   <div 
                     className="wallet-progress__fill"
-                    style={{ width: `${Math.min(100, (transactions?.usedCredit - paidCredit) / transactions?.totalCreditLimit * 100)}%` }}
+                    style={{ width: `${Math.min(100, (walletDashboard?.usedCredit - paidCredit) / walletDashboard?.totalCreditLimit * 100)}%` }}
                   ></div>
                 </div>
               </div>
@@ -115,7 +116,7 @@ const DashboardWallet = () => {
                   {transactions.map((transaction) => (
                     <div key={transaction.id} className="transaction-item">
                       <div className="transaction-item__icon">
-                        {transaction.type === 'Purchase' ? (
+                        {transaction.type == 'disbursement' ? (
                           <FaShoppingBag className="transaction-item__icon-purchase" />
                         ) : (
                           <FaHistory className="transaction-item__icon-payment" />
@@ -124,7 +125,7 @@ const DashboardWallet = () => {
                       
                       <div className="transaction-item__details">
                         <div className="transaction-item__type">
-                          {transaction.type}
+                          {transaction.type == 'disbursement' ? 'Purchase' : 'Payment'}
                           {transaction.vendor && ` - ${transaction.vendor}`}
                         </div>
                         <div className="transaction-item__date">
@@ -133,8 +134,8 @@ const DashboardWallet = () => {
                       </div>
                       
                       <div className="transaction-item__amount">
-                        <span className={`transaction-item__amount-${transaction.type === 'Purchase' ? 'negative' : 'positive'}`}>
-                          {transaction.type === 'Purchase' ? '-' : '+'}₦{transaction.amount.toLocaleString()}
+                        <span className={`transaction-item__amount-${transaction.type == 'disbursement' ? 'negative' : 'positive'}`}>
+                          {transaction.type === 'disbursement' ? '-' : '+'}₦{transaction.amount.toLocaleString()}
                         </span>
                       </div>
                     </div>
@@ -154,13 +155,5 @@ const DashboardWallet = () => {
   )
 }
 
-// This component is used in DashboardWallet but not defined elsewhere
-const FaShoppingBag = () => {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="1em" height="1em">
-      <path fill="currentColor" d="M352 160v-32C352 57.42 294.579 0 224 0 153.42 0 96 57.42 96 128v32H0v272c0 44.183 35.817 80 80 80h288c44.183 0 80-35.817 80-80V160h-96zm-192-32c0-35.347 28.653-64 64-64s64 28.653 64 64v32H160v-32zm160 120c-13.255 0-24-10.745-24-24s10.745-24 24-24 24 10.745 24 24-10.745 24-24 24zm-192 0c-13.255 0-24-10.745-24-24s10.745-24 24-24 24 10.745 24 24-10.745 24-24 24z"/>
-    </svg>
-  )
-}
 
 export default DashboardWallet

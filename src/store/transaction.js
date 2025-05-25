@@ -4,16 +4,30 @@ import { useUserStore } from "./userStore";
 import { toast } from "react-toastify";
 
 export const useTransactionStore = create((set) => ({
+  walletDashboard: {},
   transactions: {},
   isLoading: false,
   error: null,
 
   // Fetch history
-  fetchTransactions: async () => {
+  fetchWalletDashboard: async () => {
     const userId = useUserStore.getState().userId
     set({ isLoading: true });
     try {
       const response = await api.get(`loans/transactions/${userId}`);
+      if (response.status === 200) {
+        set({ walletDashboard: response.data, isLoading: false });
+      }
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+    }
+  },
+
+  fetchTransactions: async () => {
+    const userId = useUserStore.getState().userId
+    set({ isLoading: true });
+    try {
+      const response = await api.get(`loans/payment/${userId}`);
       if (response.status === 200) {
         set({ transactions: response.data, isLoading: false });
       }

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { FaUser, FaPhone, FaEnvelope, FaIdCard, FaUniversity, FaEdit, FaCheck } from 'react-icons/fa'
 import { useUserStore } from '../../../store/userStore'
@@ -7,13 +7,17 @@ import FormInput from '../../../components/FormInput/FormInput'
 import './DashboardSections.css'
 
 const DashboardProfile = () => {
-  const { user, setUser } = useUserStore()
+  const { user, setUser, fetchUserProfile } = useUserStore()
   const [isEditing, setIsEditing] = useState(false)
   const [formData, setFormData] = useState({
     fullName: user.fullName || '',
     phoneNumber: user.phoneNumber || '',
     email: user.email || ''
   })
+
+  useEffect(() => {
+    fetchUserProfile()
+  }, [fetchUserProfile])
   
   const handleEditToggle = () => {
     if (isEditing) {
@@ -70,6 +74,7 @@ const DashboardProfile = () => {
             <Button
               variant={isEditing ? 'secondary' : 'primary'}
               size="small"
+              disabled
               onClick={handleEditToggle}
               icon={isEditing ? <FaCheck /> : <FaEdit />}
               iconPosition="left"

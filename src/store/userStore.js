@@ -116,6 +116,31 @@ export const useUserStore = create((set) => ({
       });
   },
 
+  fetchUserProfile: async () => {
+    set({ isLoading: true });
+    try {
+      const response = await api.get(`auth/users/${localStorage.getItem("userId")}`);
+      if (response.status === 200) {
+        set({
+          user: response.data,
+          isAuthenticated: true,
+          isLoading: false,
+        });
+        localStorage.setItem("user", JSON.stringify(response.data));
+      }
+    } catch (error) {
+      console.error("Fetch user profile error:", error);
+      toast.error(
+        error?.response?.data?.message || "Failed to fetch user profile."
+      );
+      set({
+        isAuthenticated: false,
+        isLoading: false,
+        error: "Failed to fetch user profile.",
+      });
+    }
+  },
+
   logout: () => {
     set({
       isAuthenticated: false,

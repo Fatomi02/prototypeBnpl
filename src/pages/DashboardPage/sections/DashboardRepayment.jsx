@@ -84,6 +84,7 @@ const DashboardRepayments = () => {
                       onClick={handleSetupAutoPay}
                       isLoading={isSettingUpAutoPay}
                       size="small"
+                      disabled
                     >
                       Set Up Auto-Pay
                     </Button>
@@ -129,11 +130,11 @@ const DashboardRepayments = () => {
                     >
                       <div className="repayment-item__icon">
                         {repayment.status === 'paid off' ? (
-                          <FaCheckCircle />
+                          <FaCheckCircle style={{ color: 'green' }} />
                         ) : repayment.status == 'pending' ? (
                           <FaCalendarAlt />
                         ) : (
-                          <FaClock />
+                          <FaClock style={{ color: 'red' }} />
                         )}
                       </div>
                       
