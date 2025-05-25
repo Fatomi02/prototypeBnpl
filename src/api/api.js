@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://bnpl-service-2-06lc.onrender.com/",
+  baseURL: "https://bnpl-service-try-7ewi.onrender.com/",
   // withCredentials: true,
 });
 

@@ -602,8 +602,8 @@
 }
 
 .application-item__status-badge--approved {
-  background-color: var(--color-success-500);
-  color: white;
+  background-color: var(--color-success-500) !important;
+  color: white !important;
 }
 
 .application-item__status-badge--rejected {
@@ -1071,6 +1071,11 @@
 .repayment-item__status-badge--paid {
   background-color: var(--color-success-500);
   color: white;
+}
+
+.repayment-item__status-badge--approved {
+  background-color: var(--color-success-500);
+  color: white  !important;
 }
 
 .repayment-item__status-badge--upcoming {
