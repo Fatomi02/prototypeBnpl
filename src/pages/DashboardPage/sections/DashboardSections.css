@@ -719,6 +719,11 @@
   color: white;
 }
 
+.profile-info__badge--rejected {
+  background-color: var(--color-error-500);
+  color: white;
+}
+
 .profile-info__note {
   margin-top: var(--space-6);
   font-size: 0.875rem;

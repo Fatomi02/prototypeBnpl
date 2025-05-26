@@ -123,7 +123,7 @@ const DashboardHistory = () => {
                         
                         <div className="application-item__status">
                           <span className={`application-item__status-badge application-item__status-badge--${application.status}`}>
-                            {application.status}
+                              {application.status === 'approved' ? 'Vendor Paid' : application.status === 'paid off' ? 'Loan Repaid' : application.status}
                           </span>
                         </div>
                       </div>

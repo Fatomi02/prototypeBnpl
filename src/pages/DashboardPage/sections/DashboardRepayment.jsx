@@ -153,14 +153,14 @@ const DashboardRepayments = () => {
                       
                       <div className="repayment-item__status">
                         <span className={`repayment-item__status-badge repayment-item__status-badge--${repayment.status}`}>
-                          {repayment.status}
+                          {repayment.status === 'approved' ? 'Vendor Paid' : repayment.status === 'paid off' ? 'Loan Repaid' : repayment.status}
                         </span>
                       </div>
                       
                       {(repayment.status !== 'paid off' && repayment.status !== 'pending') && (
                         <div className="repayment-item__action">
                           <Button onClick={() => makePayment(repayment.remainingBalance, repayment.loanId)} size="small">
-                            Pay Now
+                            Repay loan
                           </Button>
                         </div>
                       )}

@@ -210,8 +210,8 @@ const DashboardProfile = () => {
                 <div className="profile-info__content">
                   <div className="profile-info__label">KYC Status</div>
                   <div className="profile-info__value">
-                    <span className={`profile-info__badge ${user.kycStatus === 'pending' ? 'profile-info__badge--pending' : 'profile-info__badge--verified'}`}>
-                      {user.kycStatus === 'pending' ? 'Pending' : 'Verified'}
+                    <span className={`profile-info__badge ${user.kycStatus === 'pending' ? 'profile-info__badge--pending' : user.kycStatus === 'rejected' ? 'profile-info__badge--rejected' : 'profile-info__badge--verified'}`}>
+                      {user.kycStatus === 'pending' ? 'Pending' : user.kycStatus === 'rejected' ? 'Rejected' : 'Verified'}
                     </span>
                   </div>
                 </div>
